@@ -288,7 +288,7 @@ def style_summary_table(df: pd.DataFrame) -> pd.io.formats.style.Styler:
             SCALED_UNIT_COL: "{:.2f}€",
             SCALED_STAKE_COL: "{:.2f}€",
         }
-    ).applymap(color_estado, subset=["Estado"])
+    ).map(color_estado, subset=["Estado"])
 
 
 def render_config_section(
