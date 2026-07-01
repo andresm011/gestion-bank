@@ -1,14 +1,20 @@
 [
   {
     "name": "3x3 insider",
-    "base_unit": 50.0,
+    "base_unit": 40.0,
     "usual_stake": 3.0,
-    "confidence_eur": 150.0
+    "confidence_eur": 120.0
   },
   {
     "name": "Awer",
     "base_unit": 20.0,
     "usual_stake": 5.0,
+    "confidence_eur": 100.0
+  },
+  {
+    "name": "Axe82",
+    "base_unit": 100.0,
+    "usual_stake": 1.0,
     "confidence_eur": 100.0
   },
   {
@@ -24,10 +30,10 @@
     "confidence_eur": 100.0
   },
   {
-    "name": "CSGO",
-    "base_unit": 60.0,
+    "name": "Blokm",
+    "base_unit": 50.0,
     "usual_stake": 2.0,
-    "confidence_eur": 120.0
+    "confidence_eur": 100.0
   },
   {
     "name": "db80",
@@ -43,8 +49,14 @@
   },
   {
     "name": "Evente",
-    "base_unit": 40.0,
+    "base_unit": 45.0,
     "usual_stake": 3.0,
+    "confidence_eur": 135.0
+  },
+  {
+    "name": "Formula Nacho",
+    "base_unit": 120.0,
+    "usual_stake": 1.0,
     "confidence_eur": 120.0
   },
   {
@@ -55,15 +67,9 @@
   },
   {
     "name": "Galaico",
-    "base_unit": 150.0,
+    "base_unit": 120.0,
     "usual_stake": 1.0,
-    "confidence_eur": 150.0
-  },
-  {
-    "name": "Grimacewood",
-    "base_unit": 100.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 100.0
+    "confidence_eur": 120.0
   },
   {
     "name": "InmamoleroBasic",
@@ -114,16 +120,16 @@
     "confidence_eur": 125.0
   },
   {
-    "name": "Reserve Info",
-    "base_unit": 40.0,
-    "usual_stake": 2.0,
-    "confidence_eur": 80.0
+    "name": "Mellado",
+    "base_unit": 100.0,
+    "usual_stake": 1.0,
+    "confidence_eur": 100.0
   },
   {
     "name": "Slava Kireev",
-    "base_unit": 120.0,
+    "base_unit": 30.0,
     "usual_stake": 1.0,
-    "confidence_eur": 120.0
+    "confidence_eur": 30.0
   },
   {
     "name": "SlavaG",
@@ -133,39 +139,27 @@
   },
   {
     "name": "SR4",
-    "base_unit": 75.0,
+    "base_unit": 65.0,
     "usual_stake": 2.0,
-    "confidence_eur": 150.0
+    "confidence_eur": 130.0
   },
   {
-    "name": "TableTennis",
-    "base_unit": 120.0,
+    "name": "Tarjetify",
+    "base_unit": 135.0,
     "usual_stake": 1.0,
-    "confidence_eur": 120.0
+    "confidence_eur": 135.0
   },
   {
-    "name": "TennisInsider",
-    "base_unit": 15.0,
-    "usual_stake": 8.0,
-    "confidence_eur": 120.0
+    "name": "Thor",
+    "base_unit": 25.0,
+    "usual_stake": 5.0,
+    "confidence_eur": 125.0
   },
   {
-    "name": "Timebomb",
-    "base_unit": 100.0,
+    "name": "TraderBG",
+    "base_unit": 10.0,
     "usual_stake": 1.0,
-    "confidence_eur": 100.0
-  },
-  {
-    "name": "Tsonga7",
-    "base_unit": 60.0,
-    "usual_stake": 2.0,
-    "confidence_eur": 120.0
-  },
-  {
-    "name": "Turkbasket",
-    "base_unit": 17.5,
-    "usual_stake": 8.0,
-    "confidence_eur": 140.0
+    "confidence_eur": 10.0
   },
   {
     "name": "ValueFarm",
@@ -187,8 +181,8 @@
   },
   {
     "name": "Wizard",
-    "base_unit": 120.0,
+    "base_unit": 100.0,
     "usual_stake": 1.0,
-    "confidence_eur": 120.0
+    "confidence_eur": 100.0
   }
 ]
