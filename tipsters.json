@@ -6,6 +6,12 @@
     "confidence_eur": 120.0
   },
   {
+    "name": "Anonymous",
+    "base_unit": 100.0,
+    "usual_stake": 1.0,
+    "confidence_eur": 100.0
+  },
+  {
     "name": "Awer",
     "base_unit": 20.0,
     "usual_stake": 5.0,
@@ -54,22 +60,16 @@
     "confidence_eur": 135.0
   },
   {
-    "name": "Formula Nacho",
-    "base_unit": 120.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 120.0
-  },
-  {
     "name": "Fusion Blog",
     "base_unit": 100.0,
     "usual_stake": 1.0,
     "confidence_eur": 100.0
   },
   {
-    "name": "Galaico",
-    "base_unit": 120.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 120.0
+    "name": "Golden Tenis",
+    "base_unit": 30.0,
+    "usual_stake": 3.0,
+    "confidence_eur": 90.0
   },
   {
     "name": "InmamoleroBasic",
@@ -97,15 +97,21 @@
   },
   {
     "name": "LevanPicks",
-    "base_unit": 25.0,
+    "base_unit": 30.0,
     "usual_stake": 5.0,
-    "confidence_eur": 125.0
+    "confidence_eur": 150.0
   },
   {
     "name": "Mallic",
     "base_unit": 100.0,
     "usual_stake": 1.5,
     "confidence_eur": 150.0
+  },
+  {
+    "name": "Marco F1",
+    "base_unit": 160.0,
+    "usual_stake": 0.5,
+    "confidence_eur": 80.0
   },
   {
     "name": "Masseria",
@@ -126,10 +132,22 @@
     "confidence_eur": 100.0
   },
   {
+    "name": "Reserve Info",
+    "base_unit": 40.0,
+    "usual_stake": 2.0,
+    "confidence_eur": 80.0
+  },
+  {
+    "name": "Russian Tenis",
+    "base_unit": 33.0,
+    "usual_stake": 3.0,
+    "confidence_eur": 99.0
+  },
+  {
     "name": "Slava Kireev",
-    "base_unit": 30.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 30.0
+    "base_unit": 40.0,
+    "usual_stake": 3.0,
+    "confidence_eur": 120.0
   },
   {
     "name": "SlavaG",
@@ -139,33 +157,33 @@
   },
   {
     "name": "SR4",
-    "base_unit": 65.0,
+    "base_unit": 50.0,
     "usual_stake": 2.0,
-    "confidence_eur": 130.0
+    "confidence_eur": 100.0
   },
   {
     "name": "Tarjetify",
     "base_unit": 135.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 135.0
+    "usual_stake": 0.75,
+    "confidence_eur": 101.0
+  },
+  {
+    "name": "The Artist",
+    "base_unit": 200.0,
+    "usual_stake": 0.5,
+    "confidence_eur": 100.0
   },
   {
     "name": "Thor",
     "base_unit": 25.0,
-    "usual_stake": 5.0,
-    "confidence_eur": 125.0
+    "usual_stake": 4.0,
+    "confidence_eur": 100.0
   },
   {
     "name": "TraderBG",
     "base_unit": 10.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 10.0
-  },
-  {
-    "name": "ValueFarm",
-    "base_unit": 125.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 125.0
+    "usual_stake": 10.0,
+    "confidence_eur": 100.0
   },
   {
     "name": "Vascobzky",
@@ -175,14 +193,8 @@
   },
   {
     "name": "Visokiy",
-    "base_unit": 180.0,
+    "base_unit": 150.0,
     "usual_stake": 1.0,
-    "confidence_eur": 180.0
-  },
-  {
-    "name": "Wizard",
-    "base_unit": 100.0,
-    "usual_stake": 1.0,
-    "confidence_eur": 100.0
+    "confidence_eur": 150.0
   }
 ]
