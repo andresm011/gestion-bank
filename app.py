@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pandas as pd
 import streamlit as st
 
 TIPSTERS_FILE = Path(__file__).with_name("tipsters.json")
@@ -276,12 +275,28 @@ def whatsapp_text(
     return "\n".join(lines)
 
 
-def summary_column_config() -> dict:
-    return {
-        USUAL_STAKE_COL: st.column_config.NumberColumn(format="%.2f"),
-        SCALED_UNIT_COL: st.column_config.NumberColumn(format="%.2f €"),
-        SCALED_STAKE_COL: st.column_config.NumberColumn(format="%.2f €"),
-    }
+def tipsters_to_editor_rows(tipsters: list[dict]) -> list[dict]:
+    return [
+        {
+            "Tipster": str(t["name"]),
+            BASE_UNIT_COL: float(t["base_unit"]),
+            USUAL_STAKE_COL: float(t["usual_stake"]),
+            CONFIDENCE_COL: float(t["confidence_eur"]),
+        }
+        for t in tipsters
+    ]
+
+
+def editor_rows_to_tipsters(rows: list[dict]) -> list[dict]:
+    return [
+        {
+            "name": str(row["Tipster"]).strip(),
+            "base_unit": float(row[BASE_UNIT_COL]),
+            "usual_stake": float(row[USUAL_STAKE_COL]),
+            "confidence_eur": float(row[CONFIDENCE_COL]),
+        }
+        for row in rows
+    ]
 
 
 def render_config_section(
@@ -336,7 +351,7 @@ def render_config_section(
 
 def render_tipster_editor(
     tipsters: list[dict], mobile_mode: bool
-) -> tuple[pd.DataFrame, bool, bool]:
+) -> tuple[list[dict], bool, bool]:
     section_header(
         "2) Editar tipsters (opcional)",
         "Aqui puedes personalizar nombre, unidad base, stake habitual y confianza de cada tipster. "
@@ -348,19 +363,11 @@ def render_tipster_editor(
         st.info(
             "Modo publico: los cambios se aplican solo en tu sesion y no afectan a otros usuarios."
         )
-    edit_cols = ["name", "base_unit", "usual_stake", "confidence_eur"]
-    edit_df = pd.DataFrame(tipsters)[edit_cols].rename(
-        columns={
-            "name": "Tipster",
-            "base_unit": BASE_UNIT_COL,
-            "usual_stake": USUAL_STAKE_COL,
-            "confidence_eur": CONFIDENCE_COL,
-        }
-    )
+    editor_rows = tipsters_to_editor_rows(tipsters)
     editor_container = st.expander("Editar tabla de tipsters", expanded=not mobile_mode)
     with editor_container:
-        edited_df = st.data_editor(
-            edit_df,
+        edited_rows = st.data_editor(
+            editor_rows,
             width="stretch",
             hide_index=True,
             num_rows="dynamic",
@@ -378,11 +385,11 @@ def render_tipster_editor(
         save_changes = st.button("Aplicar cambios de tipsters", width="stretch")
     with b2:
         restore_defaults = st.button("Restaurar tabla original", width="stretch")
-    return edited_df, save_changes, restore_defaults
+    return edited_rows, save_changes, restore_defaults
 
 
 def render_summary_table(
-    df: pd.DataFrame, max_bet: float, scale_factor: float, mobile_mode: bool
+    rows: list[dict], max_bet: float, scale_factor: float, mobile_mode: bool
 ) -> None:
     section_header(
         "3) Tabla de stakes escalados",
@@ -393,31 +400,21 @@ def render_summary_table(
     m1, m2, m3 = st.columns(3)
     m1.metric("Apuesta tope", f"{max_bet:.2f}€")
     m2.metric("Factor escala", f"x{scale_factor:.4f}")
-    m3.metric("Tipsters", f"{len(df)}")
+    m3.metric("Tipsters", f"{len(rows)}")
 
     if mobile_mode:
-        show_cols_mobile = ["Tipster", SCALED_UNIT_COL, SCALED_STAKE_COL, "Estado"]
-        st.dataframe(
-            df[show_cols_mobile],
-            width="stretch",
-            hide_index=True,
-            column_config=summary_column_config(),
-        )
-        return
+        show_cols = ["Tipster", SCALED_UNIT_COL, SCALED_STAKE_COL, "Estado"]
+    else:
+        show_cols = [
+            "Tipster",
+            USUAL_STAKE_COL,
+            SCALED_UNIT_COL,
+            SCALED_STAKE_COL,
+            "Estado",
+        ]
 
-    show_cols = [
-        "Tipster",
-        USUAL_STAKE_COL,
-        SCALED_UNIT_COL,
-        SCALED_STAKE_COL,
-        "Estado",
-    ]
-    st.dataframe(
-        df[show_cols],
-        width="stretch",
-        hide_index=True,
-        column_config=summary_column_config(),
-    )
+    table_rows = [{col: row[col] for col in show_cols} for row in rows]
+    st.table(table_rows)
 
 
 def render_pick_section(rows: list[dict], max_bet: float) -> None:
@@ -478,19 +475,12 @@ def main() -> None:
     bank, max_percent = render_config_section(bank, max_percent, mobile_mode)
     st.divider()
 
-    edited_df, save_changes, restore_defaults = render_tipster_editor(
+    edited_rows, save_changes, restore_defaults = render_tipster_editor(
         tipsters, mobile_mode
     )
 
     if save_changes:
-        updated_tipsters = edited_df.rename(
-            columns={
-                "Tipster": "name",
-                BASE_UNIT_COL: "base_unit",
-                USUAL_STAKE_COL: "usual_stake",
-                CONFIDENCE_COL: "confidence_eur",
-            }
-        ).to_dict(orient="records")
+        updated_tipsters = editor_rows_to_tipsters(edited_rows)
         valid, error_msg = validate_tipsters(updated_tipsters)
         if not valid:
             st.error(error_msg)
@@ -521,10 +511,9 @@ def main() -> None:
         float(st.session_state.bank),
         float(st.session_state.max_percent),
     )
-    df = pd.DataFrame(rows)
     st.divider()
 
-    render_summary_table(df, max_bet, scale_factor, mobile_mode)
+    render_summary_table(rows, max_bet, scale_factor, mobile_mode)
     st.divider()
 
     render_pick_section(rows, max_bet)
