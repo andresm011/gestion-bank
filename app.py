@@ -318,7 +318,7 @@ def render_config_section(
             value=float(default_percent),
             step=0.1,
         )
-        if st.button("Aplicar configuracion", width="stretch"):
+        if st.button("Aplicar configuracion", use_container_width=True):
             st.session_state.bank = float(bank)
             st.session_state.max_percent = float(max_percent)
             if not PUBLIC_APP_MODE:
@@ -340,7 +340,7 @@ def render_config_section(
         )
     with c3:
         st.write("")
-        if st.button("Aplicar", width="stretch"):
+        if st.button("Aplicar", use_container_width=True):
             st.session_state.bank = float(bank)
             st.session_state.max_percent = float(max_percent)
             if not PUBLIC_APP_MODE:
@@ -368,7 +368,7 @@ def render_tipster_editor(
     with editor_container:
         edited_rows = st.data_editor(
             editor_rows,
-            width="stretch",
+            use_container_width=True,
             hide_index=True,
             num_rows="dynamic",
             column_config={
@@ -382,9 +382,9 @@ def render_tipster_editor(
         )
     b1, b2 = st.columns(2)
     with b1:
-        save_changes = st.button("Aplicar cambios de tipsters", width="stretch")
+        save_changes = st.button("Aplicar cambios de tipsters", use_container_width=True)
     with b2:
-        restore_defaults = st.button("Restaurar tabla original", width="stretch")
+        restore_defaults = st.button("Restaurar tabla original", use_container_width=True)
     return edited_rows, save_changes, restore_defaults
 
 
