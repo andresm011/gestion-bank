@@ -1,11 +1,9 @@
 [server]
 headless = true
-fileWatcherType = "none"
-enableCORS = false
-enableXsrfProtection = false
+fileWatcherType = "poll"
 
 [browser]
 gatherUsageStats = false
 
 [runner]
-fastReruns = true
+fastReruns = false

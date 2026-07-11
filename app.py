@@ -351,7 +351,7 @@ def render_config_section(
 
 def render_tipster_editor(
     tipsters: list[dict], mobile_mode: bool
-) -> tuple[list[dict], bool, bool]:
+) -> tuple[list[dict] | None, bool, bool]:
     section_header(
         "2) Editar tipsters (opcional)",
         "Aqui puedes personalizar nombre, unidad base, stake habitual y confianza de cada tipster. "
@@ -361,8 +361,17 @@ def render_tipster_editor(
     )
     if PUBLIC_APP_MODE:
         st.info(
-            "Modo publico: los cambios se aplican solo en tu sesion y no afectan a otros usuarios."
+            "Modo publico: usa la tabla de SoloPicks como referencia. "
+            "Pulsa restaurar para cargar la version actualizada."
         )
+        editor_rows = tipsters_to_editor_rows(tipsters)
+        with st.expander("Ver tabla de tipsters", expanded=not mobile_mode):
+            st.table(editor_rows)
+        restore_defaults = st.button(
+            "Restaurar tabla original", use_container_width=True
+        )
+        return None, False, restore_defaults
+
     editor_rows = tipsters_to_editor_rows(tipsters)
     editor_container = st.expander("Editar tabla de tipsters", expanded=not mobile_mode)
     with editor_container:
@@ -479,7 +488,7 @@ def main() -> None:
         tipsters, mobile_mode
     )
 
-    if save_changes:
+    if save_changes and edited_rows is not None:
         updated_tipsters = editor_rows_to_tipsters(edited_rows)
         valid, error_msg = validate_tipsters(updated_tipsters)
         if not valid:
