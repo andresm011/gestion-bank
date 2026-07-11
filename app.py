@@ -276,19 +276,12 @@ def whatsapp_text(
     return "\n".join(lines)
 
 
-def style_summary_table(df: pd.DataFrame) -> pd.io.formats.style.Styler:
-    def color_estado(value: str) -> str:
-        if value == "OK":
-            return "background-color: rgba(34, 197, 94, 0.25); color: #14532d; font-weight: 700;"
-        return "background-color: rgba(239, 68, 68, 0.25); color: #7f1d1d; font-weight: 700;"
-
-    return df.style.format(
-        {
-            USUAL_STAKE_COL: "{:.2f}",
-            SCALED_UNIT_COL: "{:.2f}€",
-            SCALED_STAKE_COL: "{:.2f}€",
-        }
-    ).map(color_estado, subset=["Estado"])
+def summary_column_config() -> dict:
+    return {
+        USUAL_STAKE_COL: st.column_config.NumberColumn(format="%.2f"),
+        SCALED_UNIT_COL: st.column_config.NumberColumn(format="%.2f €"),
+        SCALED_STAKE_COL: st.column_config.NumberColumn(format="%.2f €"),
+    }
 
 
 def render_config_section(
@@ -310,7 +303,7 @@ def render_config_section(
             value=float(default_percent),
             step=0.1,
         )
-        if st.button("Aplicar configuracion", use_container_width=True):
+        if st.button("Aplicar configuracion", width="stretch"):
             st.session_state.bank = float(bank)
             st.session_state.max_percent = float(max_percent)
             if not PUBLIC_APP_MODE:
@@ -332,7 +325,7 @@ def render_config_section(
         )
     with c3:
         st.write("")
-        if st.button("Aplicar", use_container_width=True):
+        if st.button("Aplicar", width="stretch"):
             st.session_state.bank = float(bank)
             st.session_state.max_percent = float(max_percent)
             if not PUBLIC_APP_MODE:
@@ -368,7 +361,7 @@ def render_tipster_editor(
     with editor_container:
         edited_df = st.data_editor(
             edit_df,
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
             num_rows="dynamic",
             column_config={
@@ -382,9 +375,9 @@ def render_tipster_editor(
         )
     b1, b2 = st.columns(2)
     with b1:
-        save_changes = st.button("Aplicar cambios de tipsters", use_container_width=True)
+        save_changes = st.button("Aplicar cambios de tipsters", width="stretch")
     with b2:
-        restore_defaults = st.button("Restaurar tabla original", use_container_width=True)
+        restore_defaults = st.button("Restaurar tabla original", width="stretch")
     return edited_df, save_changes, restore_defaults
 
 
@@ -405,9 +398,10 @@ def render_summary_table(
     if mobile_mode:
         show_cols_mobile = ["Tipster", SCALED_UNIT_COL, SCALED_STAKE_COL, "Estado"]
         st.dataframe(
-            style_summary_table(df[show_cols_mobile]),
-            use_container_width=True,
+            df[show_cols_mobile],
+            width="stretch",
             hide_index=True,
+            column_config=summary_column_config(),
         )
         return
 
@@ -419,7 +413,10 @@ def render_summary_table(
         "Estado",
     ]
     st.dataframe(
-        style_summary_table(df[show_cols]), use_container_width=True, hide_index=True
+        df[show_cols],
+        width="stretch",
+        hide_index=True,
+        column_config=summary_column_config(),
     )
 
 
@@ -478,51 +475,46 @@ def main() -> None:
     tipsters = st.session_state.tipsters_working
     bank = float(st.session_state.bank)
     max_percent = float(st.session_state.max_percent)
-    tab_config, tab_tipsters, tab_tabla, tab_pick, tab_whatsapp = st.tabs(
-        ["⚙️ Config", "🛠️ Tipsters", "📊 Tabla", "🎯 Pick", "💬 WhatsApp"]
+    bank, max_percent = render_config_section(bank, max_percent, mobile_mode)
+    st.divider()
+
+    edited_df, save_changes, restore_defaults = render_tipster_editor(
+        tipsters, mobile_mode
     )
 
-    with tab_config:
-        bank, max_percent = render_config_section(bank, max_percent, mobile_mode)
+    if save_changes:
+        updated_tipsters = edited_df.rename(
+            columns={
+                "Tipster": "name",
+                BASE_UNIT_COL: "base_unit",
+                USUAL_STAKE_COL: "usual_stake",
+                CONFIDENCE_COL: "confidence_eur",
+            }
+        ).to_dict(orient="records")
+        valid, error_msg = validate_tipsters(updated_tipsters)
+        if not valid:
+            st.error(error_msg)
+        else:
+            st.session_state.tipsters_working = updated_tipsters
+            if not PUBLIC_APP_MODE:
+                save_tipsters(updated_tipsters)
+            st.success("Tipsters aplicados correctamente.")
+            st.rerun()
 
-    with tab_tipsters:
-        edited_df, save_changes, restore_defaults = render_tipster_editor(
-            tipsters, mobile_mode
-        )
-
-        if save_changes:
-            updated_tipsters = edited_df.rename(
-                columns={
-                    "Tipster": "name",
-                    BASE_UNIT_COL: "base_unit",
-                    USUAL_STAKE_COL: "usual_stake",
-                    CONFIDENCE_COL: "confidence_eur",
-                }
-            ).to_dict(orient="records")
-            valid, error_msg = validate_tipsters(updated_tipsters)
-            if not valid:
-                st.error(error_msg)
-            else:
-                st.session_state.tipsters_working = updated_tipsters
-                if not PUBLIC_APP_MODE:
-                    save_tipsters(updated_tipsters)
-                st.success("Tipsters aplicados correctamente.")
-                st.rerun()
-
-        if restore_defaults:
-            original_tipsters = load_original_tipsters()
-            valid, error_msg = validate_tipsters(original_tipsters)
-            if not valid:
-                st.error(
-                    "No se pudo restaurar la configuracion original. "
-                    f"Detalle: {error_msg or 'tipsters_original.json no disponible o invalido.'}"
-                )
-            else:
-                st.session_state.tipsters_working = original_tipsters
-                if not PUBLIC_APP_MODE:
-                    save_tipsters(original_tipsters)
-                st.success("Tipsters restaurados a la tabla original.")
-                st.rerun()
+    if restore_defaults:
+        original_tipsters = load_original_tipsters()
+        valid, error_msg = validate_tipsters(original_tipsters)
+        if not valid:
+            st.error(
+                "No se pudo restaurar la configuracion original. "
+                f"Detalle: {error_msg or 'tipsters_original.json no disponible o invalido.'}"
+            )
+        else:
+            st.session_state.tipsters_working = original_tipsters
+            if not PUBLIC_APP_MODE:
+                save_tipsters(original_tipsters)
+            st.success("Tipsters restaurados a la tabla original.")
+            st.rerun()
 
     rows, max_bet, scale_factor = build_rows(
         st.session_state.tipsters_working,
@@ -530,21 +522,21 @@ def main() -> None:
         float(st.session_state.max_percent),
     )
     df = pd.DataFrame(rows)
+    st.divider()
 
-    with tab_tabla:
-        render_summary_table(df, max_bet, scale_factor, mobile_mode)
+    render_summary_table(df, max_bet, scale_factor, mobile_mode)
+    st.divider()
 
-    with tab_pick:
-        render_pick_section(rows, max_bet)
+    render_pick_section(rows, max_bet)
+    st.divider()
 
-    with tab_whatsapp:
-        render_whatsapp_section(
-            rows,
-            float(st.session_state.bank),
-            float(st.session_state.max_percent),
-            max_bet,
-            mobile_mode,
-        )
+    render_whatsapp_section(
+        rows,
+        float(st.session_state.bank),
+        float(st.session_state.max_percent),
+        max_bet,
+        mobile_mode,
+    )
 
 
 if __name__ == "__main__":
